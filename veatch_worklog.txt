@@ -1,0 +1,4 @@
+Feb 19:
+	Began ER Diagram.
+	Setup VM and configured MySQL.
+	Finished ER Diagram.
