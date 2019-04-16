@@ -13,7 +13,7 @@
 		"Always use POST if the form data contains sensitive or personal information. 
 	     The POST method does not display the submitted form data in the page address field."
 	 -->
-	<form method="post" action="nodes.jsp">
+	<form method="post" action="main.jsp">
 		Username: <input type="text" name="username"><br>
 		Password: <input type="password" name="password"><br>
 		<input type="submit" value="Login">
