@@ -31,6 +31,7 @@ LIMIT		10;
 
 -- Table 1: ID Q3
 
+SET @k = 10; # NOTE: Hardcoded because of MySQL bug, will use JDBC parameterized queries
 SET @`year` = 2016;
 
 SELECT		q.hashtag, COUNT(*) AS state_count, GROUP_CONCAT(q.state)
