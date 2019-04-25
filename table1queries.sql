@@ -47,6 +47,37 @@ GROUP BY	q.hashtag
 ORDER BY	state_count DESC
 LIMIT 		10;
 
+-- Table 1: ID Q6
+
+SELECT u.sname, u.belongs
+FROM user u, hashtag h, tweet_hashtag th, tweet t
+WHERE t.tweeted_by=u.sname AND t.id=th.tweet_id AND h.hashtag IN ("GOPDebate", "DemDebate") 
+GROUP BY (u.sname) HAVING COUNT(u.sname) = 2
+ORDER BY u.followers DESC;
+
+-- Table 1: ID Q10
+
+SELECT s.state
+FROM state s, user u, tweet t, tweet_hashtag th, hashtag h
+WHERE s.state=u.belongs AND u.sname=t.tweeted_by AND t.month=1 AND t.id=th.tweet_id AND th.hashtag=h.hashtag AND h.hashtag IN ("HB375", "AK")
+GROUP BY (s.state)
+HAVING COUNT(DISTINCT h.hashtag)=2;
+
+-- Table 1: ID Q15
+
+SELECT u.sname, s.state, ur.url
+FROM user u, state s, url ur, tweet t, tweet_url tu
+WHERE s.state=u.belongs AND t.tweeted_by=u.sname AND tu.tweet_id=t.id AND tu.url=ur.url AND u.sub_category="democrat" AND t.month=1;
+
+-- TABLE 1: ID Q23
+
+SELECT h.hashtag, COUNT(h.hashtag) as amnt
+FROM hashtag h, user u, tweet_hashtag th, tweet t
+WHERE h.hashtag=th.hashtag AND th.tweet_id=t.id AND t.tweeted_by=u.sname AND u.sub_category="democrat" AND t.month IN (1, 2, 3)
+GROUP BY (h.hashtag)
+ORDER BY COUNT(h.hashtag) 
+DESC LIMIT 5;
+
 -- Table 1: ID Q27
 
 SET @k = 10; # NOTE: Hardcoded because of MySQL bug, will use JDBC parameterized queries
@@ -69,3 +100,11 @@ WHERE		t.`month` = @`month` AND t.`year` = @year2
 GROUP BY	u.uname
 ORDER BY 	SUM(t.rt_count) DESC
 LIMIT 		10);
+
+-- Table 1: ID I
+
+INSERT INTO db_user VALUES ("jdveatch", sha1("donthackme"), true);
+
+-- TABLE 1: ID D
+
+DELETE FROM user WHERE sname="ajcads";
