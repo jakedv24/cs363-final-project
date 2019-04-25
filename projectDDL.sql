@@ -7,6 +7,9 @@ DROP TABLE IF EXISTS `user`;
 DROP TABLE IF EXISTS hashtag;
 DROP TABLE IF EXISTS url;
 DROP TABLE IF EXISTS state;
+DROP TABLE IF EXISTS db_user;
+
+CREATE TABLE db_user(uname varchar(12), pswd varchar(100), is_admin boolean);
 
 CREATE TABLE hashtag (
 	hashtag VARCHAR(279),

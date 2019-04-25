@@ -2,3 +2,10 @@ Feb 19:
 	Began ER Diagram.
 	Setup VM and configured MySQL.
 	Finished ER Diagram.
+	
+Apr 12:
+	Init project files and began working on JSP files.
+	Created Github repo for collaboration.
+	
+Apr 25:
+	Created a db_user table to store admin and normal users for db access.
