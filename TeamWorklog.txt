@@ -1,0 +1,24 @@
+February 18-22, 2019
+	JV	Began ER diagram, setup VM and configured MySQL
+	JV	Completed ER diagram
+
+March   11-15, 2019
+	DW	Reviewed Jake's ERD
+
+April    1- 5, 2019
+	Team	Met to discuss plan-of-attack and work divison for project
+
+April    8-12, 2019
+	JV	Initialize project and began JSP file work
+	JV	Initialize Github repository for collaboration
+	DW	Began conversion of project ERD to DDL/schema
+	DW	Implemented basic table structure and constraints
+
+April   15-19, 2019
+	DW	Implemented Q1, Q2, and Q27
+	DW	Clarified query with professor, implemented Q27
+
+April   22-26, 2019
+	DW	Refactored login.jsp (POSTs to same page)
+	DW	Implemented session storage for auth. information
+	DW	Updated project log documentation
