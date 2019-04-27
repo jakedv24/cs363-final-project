@@ -23,3 +23,7 @@ April   22-26, 2019
 	DW	Implemented session storage for auth. information
 	DW	Updated project log documentation
 	JV	Finished rest of SQL queries.
+
+April	27, 2019
+	JV	Added base page functionality. Imported jdbc connector.
+	JV	Created a form on the main page to handle user input and created a connector.
