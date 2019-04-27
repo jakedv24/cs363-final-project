@@ -1,4 +1,4 @@
-<%@ page import="java.sql.*" %>
+<%@ page import="java.sql.*, com.mysql.jdbc.Driver" %>
 <%--
   Created by IntelliJ IDEA.
   User: Jake
@@ -27,7 +27,7 @@
         ResultSet rs;
 
         try {
-            Class.forName("com.mysql.jdbc.driver");
+            Class.forName("com.mysql.jdbc.Driver");
             conn = DriverManager.getConnection(DB_URL, session.getAttribute("username").toString(), session.getAttribute("password").toString());
             out.println("<p>Connection made!</p>");
         } catch (ClassNotFoundException e) {
