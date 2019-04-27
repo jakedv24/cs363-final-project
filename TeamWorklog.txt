@@ -22,3 +22,4 @@ April   22-26, 2019
 	DW	Refactored login.jsp (POSTs to same page)
 	DW	Implemented session storage for auth. information
 	DW	Updated project log documentation
+	JV	Finished rest of SQL queries.
