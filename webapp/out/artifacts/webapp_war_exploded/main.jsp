@@ -32,6 +32,7 @@
             out.println("<p>Connection made!</p>");
         } catch (ClassNotFoundException e) {
             out.println("<p>ERROR: Unable to find mysql jdbc driver</p>");
+            throw e;
         } catch (SQLException e) {
             out.println("<p>ERROR: Unable to connect to sql database</p>");
         }
