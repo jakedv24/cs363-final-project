@@ -1,3 +1,4 @@
+<%@ page import="java.sql.*" %>
 <%--
   Created by IntelliJ IDEA.
   User: Jake
@@ -11,6 +12,32 @@
     <title>Main</title>
 </head>
 <body>
+    <%@ include file="./DBInfo.jsp"%>
+
+    <%
+        if (request.getParameter("username") != null && request.getParameter("password") != null) {
+            session.setAttribute("username", request.getParameter("username"));
+            session.setAttribute("password", request.getParameter("password"));
+        }
+    %>
+
+    <%
+        Connection conn;
+        PreparedStatement stmt;
+        ResultSet rs;
+
+        try {
+            Class.forName("com.mysql.jdbc.driver");
+            conn = DriverManager.getConnection(DB_URL, session.getAttribute("username").toString(), session.getAttribute("password").toString());
+            out.println("<p>Connection made!</p>");
+        } catch (ClassNotFoundException e) {
+            out.println("<p>ERROR: Unable to find mysql jdbc driver</p>");
+        } catch (SQLException e) {
+            out.println("<p>ERROR: Unable to connect to sql database</p>");
+        }
+    %>
+
     <h3>Select an action</h3>
+
 </body>
 </html>
