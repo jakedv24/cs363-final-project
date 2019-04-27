@@ -9,3 +9,4 @@ Apr 12:
 	
 Apr 25:
 	Created a db_user table to store admin and normal users for db access.
+	Finished the remaining SQL Queries.
