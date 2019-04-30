@@ -1,25 +1,25 @@
-<%@ page import="java.sql.*, com.mysql.jdbc.Driver" %>
 <%--
   Created by IntelliJ IDEA.
-  User: Jake
+  User: Jake, Daniel
   Date: 4/16/2019
   Time: 9:51 AM
   To change this template use File | Settings | File Templates.
 --%>
+
+<%
+// Require users to be logged in to view this page
+if (!((boolean)session.getAttribute("authenticated")))
+    response.sendRedirect("login.jsp");
+%>
+
+<%@ page import="java.sql.*, com.mysql.jdbc.Driver" %>
 <%@ page contentType="text/html;charset=UTF-8" language="java" %>
 <html>
 <head>
     <title>Main</title>
 </head>
 <body>
-    <%@ include file="./DBInfo.jsp"%>
-
-    <%
-        if (request.getParameter("username") != null && request.getParameter("password") != null) {
-            session.setAttribute("username", request.getParameter("username"));
-            session.setAttribute("password", request.getParameter("password"));
-        }
-    %>
+    <%@ include file="./dbconf.jsp"%>
 
     <%
         Connection conn;
@@ -28,7 +28,7 @@
 
         try {
             Class.forName("com.mysql.jdbc.Driver");
-            conn = DriverManager.getConnection(DB_URL, session.getAttribute("username").toString(), session.getAttribute("password").toString());
+            conn = DriverManager.getConnection(CONN_STR, CONN_USR, CONN_PWD);
 
             out.println("<p>Connection made!</p>");
             out.println("<h3>Select a query</h3>");
