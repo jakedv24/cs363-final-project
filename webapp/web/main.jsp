@@ -34,8 +34,19 @@
             out.println("<h3>Select a query</h3>");
             out.println("<form><select name='selectedQuery'>");
 
-            // TODO dynamically render options based on admin status
             out.println("<option value='Q1'>Q1</option>");
+            out.println("<option value='Q2'>Q2</option>");
+            out.println("<option value='Q3'>Q3</option>");
+            out.println("<option value='Q6'>Q6</option>");
+            out.println("<option value='Q10'>Q10</option>");
+            out.println("<option value='Q15'>Q15</option>");
+            out.println("<option value='Q23'>Q23</option>");
+            out.println("<option value='Q27'>Q27</option>");
+
+            // TODO dynamically render options based on admin status
+            // How do we want to handle "user table" logins? Two login pages, one for db, other for user?
+            out.println("<option value='I'>I</option>");
+            out.println("<option value='D'>D</option>");
 
             out.println("</select></form>");
         } catch (ClassNotFoundException e) {

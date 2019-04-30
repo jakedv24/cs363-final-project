@@ -4,11 +4,11 @@ SET @k = 10; # NOTE: Hardcoded because of MySQL bug, will use JDBC parameterized
 SET @`month` = 5;
 SET @`year` = 2016;
 
-SELECT			q.rt_count, q.`text`, q.uname, q.category, q.sub_category
+SELECT			q.rt_count, q.`text`, q.sname, q.category, q.sub_category
 FROM (
-	SELECT 		t.rt_count, t.`text`, u.uname, u.category, u.sub_category, t.`month`, t.`day`, t.`year`
+	SELECT 		t.rt_count, t.`text`, u.sname, u.category, u.sub_category, t.`month`, t.`day`, t.`year`
 	FROM 		tweet t
-	INNER JOIN	user u ON u.uname = t.tweeted_by
+	INNER JOIN	user u ON u.sname = t.tweeted_by
 	WHERE		t.`month` = @`month` AND t.`year` = @`year`
 	ORDER BY 	t.rt_count DESC
 	LIMIT 		10
@@ -23,7 +23,7 @@ SET @`year` = 2016;
 
 SELECT 		*
 FROM 		user u
-INNER JOIN	tweet t ON t.tweeted_by = u.uname
+INNER JOIN	tweet t ON t.tweeted_by = u.sname
 INNER JOIN 	tweet_hashtag h ON h.tweet_id = t.id
 WHERE		t.`month` = @`month` AND t.`year` = @`year` AND h.hashtag = @hashtag
 ORDER BY 	t.rt_count DESC
@@ -39,7 +39,7 @@ FROM 		(
 	SELECT 		h.hashtag, t.`year`, s.state, COUNT(*) AS tweet_count
 	FROM		tweet t
 	INNER JOIN	tweet_hashtag h ON h.tweet_id = t.id
-	INNER JOIN 	user u ON u.uname = t.tweeted_by
+	INNER JOIN 	user u ON u.sname = t.tweeted_by
 	INNER JOIN	state s ON s.state = u.belongs
 	GROUP BY	h.hashtag, s.state, t.`year`
 ) q
@@ -85,19 +85,19 @@ SET @`month` = 5;
 SET @year1 = 2017;
 SET @year2 = 2016;
 
-(SELECT 		u.uname
+(SELECT 		u.sname
 FROM 		user u
-INNER JOIN	tweet t ON t.tweeted_by = u.uname
+INNER JOIN	tweet t ON t.tweeted_by = u.sname
 WHERE		t.`month` = @`month` AND t.`year` = @year1
-GROUP BY	u.uname
+GROUP BY	u.sname
 ORDER BY 	SUM(t.rt_count) DESC
 LIMIT 		10)
 UNION
-(SELECT 		u.uname
+(SELECT 		u.sname
 FROM 		user u
-INNER JOIN	tweet t ON t.tweeted_by = u.uname
+INNER JOIN	tweet t ON t.tweeted_by = u.sname
 WHERE		t.`month` = @`month` AND t.`year` = @year2
-GROUP BY	u.uname
+GROUP BY	u.sname
 ORDER BY 	SUM(t.rt_count) DESC
 LIMIT 		10);
 
