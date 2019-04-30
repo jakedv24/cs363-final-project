@@ -1,53 +1,58 @@
 <!-- AUTHOR: JAKE VEATCH, DANIEL WAY -->
 <%@ page language="java" contentType="text/html"%>
 <%@ page import="java.text.*,java.util.*,java.sql.*" %>
+<%@ page import="javax.servlet.http.*,javax.servlet.*"%>
+
+<%@ include file="dbconf.jsp" %>
 
 <%
 
 String username = request.getParameter("username");
 String password = request.getParameter("password");
 
-bool authenticationFailure = false; // Flag for form validation
+boolean authenticationFailure = false; // Flag for form validation
 
 // Are we processing a POST'd login?
-if (username != null || username.trim().length() > 0
-	&& password != null && password.trim().length() > 0) {
+if (username != null && username.trim().length() > 0 && password != null && password.trim().length() > 0) {
 
-	Connection conn;
-	PreparedStatement authStmt;
-	ResultSet res;	
+	Connection conn = null;
+	PreparedStatement authStmt = null;
+	ResultSet res = null;
 
-	try {	
-
+	try {
 		// Initialize JDBC driver and connect to database
-		// TODO: Using integrated creds now, user in future ?
 		Class.forName("com.mysql.jdbc.Driver");
-		conn = DriverManager.getConnection("jdbc:mysql://cs363winservdb.misc.iastate.edu:3306/team6/?useSSL=false", "", "");
+		conn = DriverManager.getConnection(CONN_STR, CONN_USR, CONN_PWD);
 
 		// Prep. the user query
-		authStmt = conn.prepareStatement("SELECT COUNT(*) FROM users WHERE username = ? AND password = ?");
+		authStmt = conn.prepareStatement("SELECT * FROM db_user WHERE uname = ? AND pswd = SHA1(?)");
 		authStmt.setString(1, username);
 		authStmt.setString(2, password);
 
 		// Execute, and depending on request update session or indicate a faillure
 		res = authStmt.executeQuery();
-		if (res.count() > 0) {
-			session.setAttribute("authenticated", "true");
+		if (res.next()) {
+			session.setAttribute("authenticated", true);
 			session.setAttribute("username", username);
 			session.setAttribute("password", password);
+			session.setAttribute("isAdministrator", res.getString("is_admin").equals("1"));
 		} else {
 			authenticationFailure = true;
 		}
-
 	} catch (Exception e) {
-		// swallow
+		// Swallow, debug in comments
+		out.println("<!--" + e.getMessage() + "-->");
 	} finally {
 		// Clean up
 		if (res != null) res.close();
 		if (authStmt != null) authStmt.close();
 		if (conn != null) conn.close();
 	}
+}
 
+// Redirect if the user is logged-in
+if ((boolean)session.getAttribute("authenticated")) {
+	response.sendRedirect("main.jsp");
 }
 
 %>
@@ -64,7 +69,7 @@ if (username != null || username.trim().length() > 0
 	<%
 	// If this is a POST'd login that failed, indicate so
 	if (authenticationFailure) {
-		out.println("<b style="color:red;">Authentication failed, please check that your username and password is correct.</b>");
+		out.println("<b style=\"color:red;\">Authentication failed, please check that your username and password is correct.</b>");
 	}
 	%>
 
