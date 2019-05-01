@@ -51,7 +51,7 @@ if (username != null && username.trim().length() > 0 && password != null && pass
 }
 
 // Redirect if the user is logged-in
-if ((boolean)session.getAttribute("authenticated")) {
+if (session.getAttribute("authenticated") != null && (boolean)session.getAttribute("authenticated")) {
 	response.sendRedirect("main.jsp");
 }
 

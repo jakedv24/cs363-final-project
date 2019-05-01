@@ -8,7 +8,7 @@
 
 <%
 // Require users to be logged in to view this page
-if (!((boolean)session.getAttribute("authenticated")))
+if (session.getAttribute("authenticated") == null || !((boolean)session.getAttribute("authenticated")))
     response.sendRedirect("login.jsp");
 %>
 

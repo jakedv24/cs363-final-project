@@ -15,27 +15,33 @@ if (!((boolean)session.getAttribute("authenticated")))
 <body>
     <h1>Query Parameters</h1>
 
-    <%@ include file="./dbconf.jsp"%>
-    <%@ include file="./queryconf.jsp"%>
-    <%
-        // Grab the requested query by its identifier
-        String queryIdentifier = request.getParameter("q");
-        Query query = QUERIES.get(queryIdentifier);
+    <form method="POST">
+        <table>
+            <%@ include file="./dbconf.jsp"%>
+            <%@ include file="./queryconf.jsp"%>
+            <%
+                // Grab the requested query by its identifier
+                String queryIdentifier = request.getParameter("q");
+                Query query = QUERIES.get(queryIdentifier);
 
-        for (QueryParam param : query.parameters) {
-            switch (param.type) {
-                case QueryParamType.NUMBER:
-                    out.println(param.name + " NUMBER");
-                    break;
-                case QueryParamType.MONTH:
-                    out.println(param.name + " MONTH");
-                    break;
-                case QueryParamType.YEAR:
-                    out.println(param.name + " YEAR");
-                    break;
-            }
-        }
-    %>
+                // Render form controls
+                for (int i = 0; i < query.parameters.size(); i++) {
+                    out.println("<tr>");
+
+                    // Retrieve the control labeling/input from the parameter itself
+                    QueryParam param = query.parameters.get(i);
+                    out.println("<td>" + param.getLabel() + "</td>");
+                    out.println("<td>" + param.getInput() + "</td>");
+
+                    out.println("</tr>");
+                }
+            %>
+            <tr>
+                <td></td>
+                <td><button type="submit">Execute Query</button></td>
+            </tr>
+        </table>
+    </form>
 
 </body>
 </html>
