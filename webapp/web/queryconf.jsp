@@ -101,6 +101,24 @@
 			}
 		}
 
+		void setStatementParameter(int index, PreparedStatement stmt) throws SQLException {
+			switch (type) {
+				case QueryParamType.NUMBER:
+				case QueryParamType.MONTH:
+				case QueryParamType.YEAR:
+					stmt.setInt(index, toNumber());
+					break;
+				case QueryParamType.SUB_CATEGORY:
+				case QueryParamType.HASHTAG:
+				case QueryParamType.HASHTAG_LIST:
+				case QueryParamType.STATE_LIST:
+				case QueryParamType.MONTH_LIST:
+				default:
+					stmt.setString(index, value);
+					break;
+			}
+		}
+
 		boolean isNumber() {
 			try {
 				toNumber();
@@ -137,14 +155,14 @@
 
 	Query q1 = new Query("Q1",
 		"List k most retweeted tweets in a given month and a given year; show the retweet count, the tweet text, the posting user's screen name, the posting user's category, the posting user's sub-category in descending order of the retweet count.",
-		"SELECT                  q.rt_count, q.`text`, q.sname, q.category, q.sub_category" +
-		"FROM (" +
-		"        SELECT          t.rt_count, t.`text`, u.sname, u.category, u.sub_category, t.`month`, t.`day`, t.`year`" +
-		"        FROM            tweet t" +
-		"        INNER JOIN      user u ON u.sname = t.tweeted_by" +
-		"        WHERE           t.`month` = ? AND t.`year` = ?" +
-		"        ORDER BY        t.rt_count DESC" +
-		"        LIMIT           ?" +
+		"SELECT                  q.rt_count, q.`text`, q.sname, q.category, q.sub_category " +
+		"FROM ( " +
+		"        SELECT          t.rt_count, t.`text`, u.sname, u.category, u.sub_category, t.`month`, t.`day`, t.`year` " +
+		"        FROM            tweet t " +
+		"        INNER JOIN      user u ON u.sname = t.tweeted_by " +
+		"        WHERE           t.`month` = ? AND t.`year` = ? " +
+		"        ORDER BY        t.rt_count DESC " +
+		"        LIMIT           ? " +
 		") q;"
 	);
 
@@ -157,13 +175,13 @@
 	// ====== CONFIGURE QUERY 2 =================================================
 
 	Query q2 = new Query("Q2",
-		"Q2 desc",
-		"SELECT          *" +
-		"FROM            user u" +
-		"INNER JOIN      tweet t ON t.tweeted_by = u.sname" +
-		"INNER JOIN      tweet_hashtag h ON h.tweet_id = t.id" +
-		"WHERE           t.`month` = ? AND t.`year` = ? AND h.hashtag = ?" +
-		"ORDER BY        t.rt_count DESC" +
+		"In a given month of a given year, find k users who used a given hashtag in a tweet with the most number of retweets; show the user's screen name, user's category, tweet text, and retweet count in descending order of the retweet count.",
+		"SELECT          * " +
+		"FROM            user u " +
+		"INNER JOIN      tweet t ON t.tweeted_by = u.sname " +
+		"INNER JOIN      tweet_hashtag h ON h.tweet_id = t.id " +
+		"WHERE           t.`month` = ? AND t.`year` = ? AND h.hashtag = ? " +
+		"ORDER BY        t.rt_count DESC " +
 		"LIMIT           ?;"
 	);
 

@@ -5,7 +5,7 @@
 
 <%
 // Require users to be logged in to view this page
-if (!((boolean)session.getAttribute("authenticated")))
+if (session.getAttribute("authenticated") != null && !((boolean)session.getAttribute("authenticated")))
     response.sendRedirect("login.jsp");
 %>
 
@@ -35,7 +35,7 @@ if (!((boolean)session.getAttribute("authenticated")))
         // If no errors, forward to results page
         if (!validationError) {
             // Build results page query string
-            String resultsParameters = "?";
+            String resultsParameters = "?q=" + queryIdentifier + "&";
             for (QueryParam param : query.parameters)
                 resultsParameters += param.identifier + "=" + param.value + "&";
 

@@ -1,58 +1,96 @@
 <%-- AUTHOR: DANIEL --%>
 
+<%@ page import="java.sql.*, com.mysql.jdbc.Driver" %>
+<%@ page contentType="text/html;charset=UTF-8" language="java" %>
+
 <%
 // Require users to be logged in to view this page
-if (!((boolean)session.getAttribute("authenticated")))
+if (session.getAttribute("authenticated") != null && !((boolean)session.getAttribute("authenticated")))
     response.sendRedirect("login.jsp");
 %>
 
-<%@ page import="java.sql.*, com.mysql.jdbc.Driver" %>
-<%@ page contentType="text/html;charset=UTF-8" language="java" %>
+<%@ include file="./dbconf.jsp"%>
+<%@ include file="./queryconf.jsp"%>
+<%
+    // Grab the requested query by its identifier
+    String queryIdentifier = request.getParameter("q");
+    Query query = QUERIES.get(queryIdentifier);
+    boolean validationError = false;
+
+    // Check if an invalid query was requested
+    if (query == null) {
+        response.sendRedirect("main.jsp");
+    }
+
+    // Step through parameters validating
+    for (QueryParam param : query.parameters) {
+        if (!param.validateInput(request.getParameter(param.identifier))) {
+            validationError = true;
+        }
+    }
+
+    // If errors (shouldn't be, we already validated), send back to the main screen
+    if (validationError) {
+        // Redirect to results page
+        response.sendRedirect("main.jsp");
+    }
+%>
+
 <html>
 <head>
     <title>Results</title>
+    <style type="text/css">
+        td, th {
+            font-size: 12px;
+        }
+    </style>
 </head>
 <body>
     <h1>Query Results</h1>
 
-    <%@ include file="./dbconf.jsp"%>
     <%
         Connection conn;
         PreparedStatement stmt;
         ResultSet rs;
+        ResultSetMetaData rsMeta;
 
         try {
             // Load driver and connect
             Class.forName("com.mysql.jdbc.Driver");
             conn = DriverManager.getConnection(CONN_STR, CONN_USR, CONN_PWD);
 
-            // Grab the requested query
-            String requestedQuery = request.getParameter("q");
+            // Setup query statement
+            stmt = conn.prepareStatement(query.query);
 
-            out.println("<p>Connection made!</p>");
-            out.println("<h3>Select a query</h3>");
-            out.println("<form><select name='selectedQuery'>");
+            // Add query parameters
+            for (int i = 0; i < query.parameters.size(); i++) {
+                QueryParam param = query.parameters.get(i);
+                param.setStatementParameter(i + 1, stmt);
+            }
 
-            out.println("<option value='Q1'>Q1</option>");
-            out.println("<option value='Q2'>Q2</option>");
-            out.println("<option value='Q3'>Q3</option>");
-            out.println("<option value='Q6'>Q6</option>");
-            out.println("<option value='Q10'>Q10</option>");
-            out.println("<option value='Q15'>Q15</option>");
-            out.println("<option value='Q23'>Q23</option>");
-            out.println("<option value='Q27'>Q27</option>");
+            // Execute
+            rs = stmt.executeQuery();
+            rsMeta = rs.getMetaData();
 
-            // TODO dynamically render options based on admin status
-            // How do we want to handle "user table" logins? Two login pages, one for db, other for user?
-            out.println("<option value='I'>I</option>");
-            out.println("<option value='D'>D</option>");
+            // Render results
+            out.println("<table border=\"1\">");
 
-            out.println("</select></form>");
-        } catch (ClassNotFoundException e) {
-            out.println("<p>ERROR: Unable to find mysql jdbc driver</p>");
-        } catch (SQLException e) {
-            out.println("<p>ERROR: Unable to connect to sql database. Check username and password and try again.</p>");
-            out.println("<form action='login.jsp'><button type='submit'>Back to login</button></form>");
+            out.println("<tr>");
+            for (int i = 0; i < rsMeta.getColumnCount(); i++) {
+                out.println("<th>" + rsMeta.getColumnName(i + 1) + "</th>");
+            }
+            out.println("</tr>");
+
+            while (rs.next()) {
+                out.println("<tr>");
+                for (int i = 0; i < rsMeta.getColumnCount(); i++) {
+                    out.println("<td>" + rs.getString(i + 1) + "</td>");
+                }
+                out.println("</tr>");
+            }
+            out.println("</table>");
+        } catch (Exception e) {
+            out.println("Error: " + e.getMessage());
         }
     %>
 
