@@ -34,16 +34,21 @@
 		String getInput() {
 			switch (type) {
 				case QueryParamType.NUMBER:
-					return "<input type=\"text\" name=\"" + identifier + "\" value=\"" + value + "\" />";
+					return "<input type=\"text\" name=\"" + identifier + "\" value=\"" + (value == null ? "" : value) + "\" />";
 				case QueryParamType.MONTH:
-					return "<input type=\"text\" name=\"" + identifier + "\" value=\"" + value + "\" />";
+					return "<input type=\"text\" name=\"" + identifier + "\" value=\"" + (value == null ? "" : value) + "\" />";
 				case QueryParamType.YEAR:
-					return "<input type=\"text\" name=\"" + identifier + "\" value=\"" + value + "\" />";
+					return "<input type=\"text\" name=\"" + identifier + "\" value=\"" + (value == null ? "" : value) + "\" />";
 				case QueryParamType.SUB_CATEGORY:
+					return "<input type=\"text\" name=\"" + identifier + "\" value=\"" + (value == null ? "" : value) + "\" />";
 				case QueryParamType.HASHTAG:
+					return "<input type=\"text\" name=\"" + identifier + "\" value=\"" + (value == null ? "" : value) + "\" />";
 				case QueryParamType.HASHTAG_LIST:
+					return "<input type=\"text\" name=\"" + identifier + "\" value=\"" + (value == null ? "" : value) + "\" />";
 				case QueryParamType.STATE_LIST:
+					return "<input type=\"text\" name=\"" + identifier + "\" value=\"" + (value == null ? "" : value) + "\" />";
 				case QueryParamType.MONTH_LIST:
+					return "<input type=\"text\" name=\"" + identifier + "\" value=\"" + (value == null ? "" : value) + "\" />";
 				default:
 					return "";
 			}
@@ -112,11 +117,13 @@
 
 	class Query {
 		String identifier;
+		String description;
 		String query;
 		List<QueryParam> parameters;
 
-		Query(String identifier, String query) {
+		Query(String identifier, String description, String query) {
 			this.identifier = identifier;
+			this.description = description;
 			this.query = query;
 			this.parameters = new ArrayList<>();
 		}
@@ -129,6 +136,7 @@
 	// ====== CONFIGURE QUERY 1 =================================================
 
 	Query q1 = new Query("Q1",
+		"List k most retweeted tweets in a given month and a given year; show the retweet count, the tweet text, the posting user's screen name, the posting user's category, the posting user's sub-category in descending order of the retweet count.",
 		"SELECT                  q.rt_count, q.`text`, q.sname, q.category, q.sub_category" +
 		"FROM (" +
 		"        SELECT          t.rt_count, t.`text`, u.sname, u.category, u.sub_category, t.`month`, t.`day`, t.`year`" +
@@ -143,6 +151,26 @@
 	q1.parameters.add(new QueryParam("month", "Month", QueryParamType.MONTH));
 	q1.parameters.add(new QueryParam("year", "Year", QueryParamType.YEAR));
 	q1.parameters.add(new QueryParam("k", "Top K Results", QueryParamType.NUMBER));
+
+	QUERIES.put(q1.identifier, q1);
+
+	// ====== CONFIGURE QUERY 2 =================================================
+
+	Query q2 = new Query("Q2",
+		"Q2 desc",
+		"SELECT          *" +
+		"FROM            user u" +
+		"INNER JOIN      tweet t ON t.tweeted_by = u.sname" +
+		"INNER JOIN      tweet_hashtag h ON h.tweet_id = t.id" +
+		"WHERE           t.`month` = ? AND t.`year` = ? AND h.hashtag = ?" +
+		"ORDER BY        t.rt_count DESC" +
+		"LIMIT           ?;"
+	);
+
+	q2.parameters.add(new QueryParam("month", "Month", QueryParamType.MONTH));
+	q2.parameters.add(new QueryParam("year", "Year", QueryParamType.YEAR));
+	q2.parameters.add(new QueryParam("hashtag", "Hashtag", QueryParamType.NUMBER));
+	q2.parameters.add(new QueryParam("k", "Top K Results", QueryParamType.NUMBER));
 
 	QUERIES.put(q1.identifier, q1);
 

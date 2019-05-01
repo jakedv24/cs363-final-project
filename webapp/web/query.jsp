@@ -50,7 +50,11 @@ if (!((boolean)session.getAttribute("authenticated")))
     <title>Results</title>
 </head>
 <body>
-    <h1>Query Parameters</h1>
+    <h1><% out.println(queryIdentifier); %> Query Parameters</h1>
+
+    <p>
+        <% out.println(query.description); %>
+    </p>
 
     <form method="POST">
         <table>
