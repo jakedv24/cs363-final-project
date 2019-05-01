@@ -32,7 +32,10 @@ if (session.getAttribute("authenticated") != null && !((boolean)session.getAttri
     // If errors (shouldn't be, we already validated), send back to the main screen
     if (validationError) {
         // Redirect to results page
-        response.sendRedirect("index.jsp");
+        //response.sendRedirect("index.jsp");
+        for (QueryParam param : query.parameters) {
+            out.println(param.validationMessage);
+        }
     }
 %>
 
@@ -52,6 +55,12 @@ if (session.getAttribute("authenticated") != null && !((boolean)session.getAttri
     <a href="logout.jsp">Logout</a> |
     <a href="index.jsp">Return to Query Selection</a> |
     <a href="query.jsp?q=<% out.println(queryIdentifier); %>">Return to Query Parameters</a>
+
+    <br />
+
+    <p>
+        <% out.println(query.description); %>
+    </p>
 
     <hr />
 

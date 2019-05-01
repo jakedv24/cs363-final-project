@@ -91,9 +91,10 @@
 						return false;
 					}
 					return true;
-				case QueryParamType.SUB_CATEGORY:
 				case QueryParamType.HASHTAG:
 				case QueryParamType.HASHTAG_LIST:
+					value = value.replaceAll("#", "");
+				case QueryParamType.SUB_CATEGORY:
 				case QueryParamType.STATE_LIST:
 				case QueryParamType.MONTH_LIST:
 				default:
@@ -187,9 +188,51 @@
 
 	q2.parameters.add(new QueryParam("month", "Month", QueryParamType.MONTH));
 	q2.parameters.add(new QueryParam("year", "Year", QueryParamType.YEAR));
-	q2.parameters.add(new QueryParam("hashtag", "Hashtag", QueryParamType.NUMBER));
+	q2.parameters.add(new QueryParam("hashtag", "Hashtag", QueryParamType.HASHTAG));
 	q2.parameters.add(new QueryParam("k", "Top K Results", QueryParamType.NUMBER));
 
 	QUERIES.put(q2.identifier, q2);
+
+	// ====== CONFIGURE QUERY 3 =================================================
+
+	Query q3 = new Query("Q3",
+		"Find k hashtags that appeared in the most number of states in a given year; list the total number of states the hashtag appeared, the list of the distinct states it appeared, and the hashtag itself in descending order of the number of states the hashtag appeared.",
+		"SELECT          q.hashtag, COUNT(*) AS state_count, GROUP_CONCAT(q.state) " +
+		"FROM            ( " +
+		"        SELECT          h.hashtag, t.`year`, s.state, COUNT(*) AS tweet_count " +
+		"        FROM            tweet t " +
+		"        INNER JOIN      tweet_hashtag h ON h.tweet_id = t.id " +
+		"        INNER JOIN      user u ON u.sname = t.tweeted_by " +
+		"        INNER JOIN      state s ON s.state = u.belongs " +
+		"		 WHERE 			 t.`year` = ?" +
+		"        GROUP BY        h.hashtag, s.state, t.`year` " +
+		") q " +
+		"GROUP BY        q.hashtag " +
+		"ORDER BY        state_count DESC " +
+		"LIMIT           ?;"
+	);
+
+	q3.parameters.add(new QueryParam("year", "Year", QueryParamType.YEAR));
+	q3.parameters.add(new QueryParam("k", "Top K Results", QueryParamType.NUMBER));
+
+	QUERIES.put(q3.identifier, q3);
+
+	// ====== CONFIGURE QUERY 6 =================================================
+
+	Query q6 = new Query("Q6",
+		"Find k users who used a certain set of hashtags in their tweets. Show the user's screen name and the state to which the user belongs in descending order of the number of followers",
+		"SELECT u.sname, u.belongs " +
+		"FROM user u, hashtag h, tweet_hashtag th, tweet t " +
+		"WHERE t.tweeted_by=u.sname AND t.id=th.tweet_id AND h.hashtag IN (?)  " +
+		"GROUP BY (u.sname) HAVING COUNT(u.sname) = ? " +
+		"ORDER BY u.followers DESC " +
+		"LIMIT ?;"
+	);
+
+	q6.parameters.add(new QueryParam("hashtags", "Hashtags", QueryParamType.HASHTAG_LIST));
+	q6.parameters.add(new QueryParam("hashtag_count", "Hashtag Count", QueryParamType.NUMBER));
+	q6.parameters.add(new QueryParam("k", "Top K Results", QueryParamType.NUMBER));
+
+	QUERIES.put(q6.identifier, q6);
 
 %>
