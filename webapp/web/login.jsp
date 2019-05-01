@@ -33,8 +33,6 @@ if (username != null && username.trim().length() > 0 && password != null && pass
 		res = authStmt.executeQuery();
 		if (res.next()) {
 			session.setAttribute("authenticated", true);
-			session.setAttribute("username", username);
-			session.setAttribute("password", password);
 			session.setAttribute("isAdministrator", res.getString("is_admin").equals("1"));
 		} else {
 			authenticationFailure = true;
@@ -52,7 +50,7 @@ if (username != null && username.trim().length() > 0 && password != null && pass
 
 // Redirect if the user is logged-in
 if (session.getAttribute("authenticated") != null && (boolean)session.getAttribute("authenticated")) {
-	response.sendRedirect("main.jsp");
+	response.sendRedirect("index.jsp");
 }
 
 %>
@@ -61,10 +59,14 @@ if (session.getAttribute("authenticated") != null && (boolean)session.getAttribu
 <html>
 <head>
 <meta charset="ISO-8859-1">
-<title>Login</title>
+<title>Login - Group 2 Final Project</title>
 </head>
 <body>
-	<h3>Login</h3>
+    <h1>Group 2 Final Project</h1>
+    <h3>Login</h3>
+    <h5>You must be logged in to access this application.</h5>
+
+    <hr />
 
 	<%
 	// If this is a POST'd login that failed, indicate so

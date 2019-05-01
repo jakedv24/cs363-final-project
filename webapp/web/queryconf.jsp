@@ -190,6 +190,6 @@
 	q2.parameters.add(new QueryParam("hashtag", "Hashtag", QueryParamType.NUMBER));
 	q2.parameters.add(new QueryParam("k", "Top K Results", QueryParamType.NUMBER));
 
-	QUERIES.put(q1.identifier, q1);
+	QUERIES.put(q2.identifier, q2);
 
 %>

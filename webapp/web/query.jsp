@@ -22,7 +22,7 @@ if (session.getAttribute("authenticated") != null && !((boolean)session.getAttri
 
         // Check if an invalid query was requested
         if (query == null) {
-            response.sendRedirect("main.jsp");
+            response.sendRedirect("index.jsp");
         }
 
         // Step through parameters validating
@@ -47,14 +47,23 @@ if (session.getAttribute("authenticated") != null && !((boolean)session.getAttri
 
 <html>
 <head>
-    <title>Results</title>
+    <title>Query Results - Group 2 Final Project</title>
 </head>
 <body>
-    <h1><% out.println(queryIdentifier); %> Query Parameters</h1>
+
+    <h1>Group 2 Final Project</h1>
+    <h3><% out.println(queryIdentifier); %> Query Parameters</h3>
+
+    <a href="logout.jsp">Logout</a> | 
+    <a href="index.jsp">Return to Query Selection</a>
+
+    <br />
 
     <p>
         <% out.println(query.description); %>
     </p>
+
+    <hr />
 
     <form method="POST">
         <table>

@@ -19,7 +19,7 @@ if (session.getAttribute("authenticated") != null && !((boolean)session.getAttri
 
     // Check if an invalid query was requested
     if (query == null) {
-        response.sendRedirect("main.jsp");
+        response.sendRedirect("index.jsp");
     }
 
     // Step through parameters validating
@@ -32,7 +32,7 @@ if (session.getAttribute("authenticated") != null && !((boolean)session.getAttri
     // If errors (shouldn't be, we already validated), send back to the main screen
     if (validationError) {
         // Redirect to results page
-        response.sendRedirect("main.jsp");
+        response.sendRedirect("index.jsp");
     }
 %>
 
@@ -46,7 +46,14 @@ if (session.getAttribute("authenticated") != null && !((boolean)session.getAttri
     </style>
 </head>
 <body>
-    <h1>Query Results</h1>
+    <h1>Group 2 Final Project</h1>
+    <h3>Query Results</h3>
+
+    <a href="logout.jsp">Logout</a> |
+    <a href="index.jsp">Return to Query Selection</a> |
+    <a href="query.jsp?q=<% out.println(queryIdentifier); %>">Return to Query Parameters</a>
+
+    <hr />
 
     <%
         Connection conn;
