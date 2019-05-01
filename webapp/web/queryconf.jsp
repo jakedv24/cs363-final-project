@@ -34,11 +34,11 @@
 		String getInput() {
 			switch (type) {
 				case QueryParamType.NUMBER:
-					return "<input type=\"text\" name=\"" + identifier + "\" />";
+					return "<input type=\"text\" name=\"" + identifier + "\" value=\"" + value + "\" />";
 				case QueryParamType.MONTH:
-					return "<input type=\"text\" name=\"" + identifier + "\" />";
+					return "<input type=\"text\" name=\"" + identifier + "\" value=\"" + value + "\" />";
 				case QueryParamType.YEAR:
-					return "<input type=\"text\" name=\"" + identifier + "\" />";
+					return "<input type=\"text\" name=\"" + identifier + "\" value=\"" + value + "\" />";
 				case QueryParamType.SUB_CATEGORY:
 				case QueryParamType.HASHTAG:
 				case QueryParamType.HASHTAG_LIST:
@@ -47,6 +47,66 @@
 				default:
 					return "";
 			}
+		}
+
+		boolean validateInput(String input) {
+			value = input;
+			if (value == null || value.trim().length() == 0) {
+				validationMessage = "Value is required.";
+				return false;
+			}
+
+			switch (type) {
+				case QueryParamType.NUMBER:
+					if (!isNumber()) {
+						validationMessage = name + " must be a number.";
+						return false;
+					} else {
+						return true;
+					}
+				case QueryParamType.MONTH:
+					if (!isNumber()) {
+						validationMessage = name + " must be a number.";
+						return false;
+					}
+					int month = toNumber();
+					if (month < 1 || month > 12) {
+						validationMessage = name + " must be between 1 and 12.";
+						return false;
+					}
+					return true;
+				case QueryParamType.YEAR:
+					if (!isNumber()) {
+						validationMessage = name + " must be a number.";
+						return false;
+					}
+					int year = toNumber();
+					if (year < 2006 || year > 2019) {
+						validationMessage = name + " must be between 2006 and 2019.";
+						return false;
+					}
+					return true;
+				case QueryParamType.SUB_CATEGORY:
+				case QueryParamType.HASHTAG:
+				case QueryParamType.HASHTAG_LIST:
+				case QueryParamType.STATE_LIST:
+				case QueryParamType.MONTH_LIST:
+				default:
+					return true;
+			}
+		}
+
+		boolean isNumber() {
+			try {
+				toNumber();
+				return true;
+			} catch (Exception e) {
+				return false;
+			}
+		}
+
+		int toNumber() {
+			return Integer.parseInt(value);
 		}
 	}
 

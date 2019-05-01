@@ -1,13 +1,50 @@
 <%-- AUTHOR: DANIEL --%>
 
+<%@ page import="java.sql.*, com.mysql.jdbc.Driver" %>
+<%@ page contentType="text/html;charset=UTF-8" language="java" %>
+
 <%
 // Require users to be logged in to view this page
 if (!((boolean)session.getAttribute("authenticated")))
     response.sendRedirect("login.jsp");
 %>
 
-<%@ page import="java.sql.*, com.mysql.jdbc.Driver" %>
-<%@ page contentType="text/html;charset=UTF-8" language="java" %>
+<%@ include file="./dbconf.jsp"%>
+<%@ include file="./queryconf.jsp"%>
+<%
+    // Grab the requested query by its identifier
+    String queryIdentifier = request.getParameter("q");
+    Query query = QUERIES.get(queryIdentifier);
+    boolean validationError = false;
+
+    // Handle query form submission
+    if (request.getParameter("submit") != null) {
+
+        // Check if an invalid query was requested
+        if (query == null) {
+            response.sendRedirect("main.jsp");
+        }
+
+        // Step through parameters validating
+        for (QueryParam param : query.parameters) {
+            if (!param.validateInput(request.getParameter(param.identifier))) {
+                validationError = true;
+            }
+        }
+
+        // If no errors, forward to results page
+        if (!validationError) {
+            // Build results page query string
+            String resultsParameters = "?";
+            for (QueryParam param : query.parameters)
+                resultsParameters += param.identifier + "=" + param.value + "&";
+
+            // Redirect to results page
+            response.sendRedirect("results.jsp" + resultsParameters);
+        }
+    }
+%>
+
 <html>
 <head>
     <title>Results</title>
@@ -17,28 +54,24 @@ if (!((boolean)session.getAttribute("authenticated")))
 
     <form method="POST">
         <table>
-            <%@ include file="./dbconf.jsp"%>
-            <%@ include file="./queryconf.jsp"%>
             <%
-                // Grab the requested query by its identifier
-                String queryIdentifier = request.getParameter("q");
-                Query query = QUERIES.get(queryIdentifier);
-
                 // Render form controls
-                for (int i = 0; i < query.parameters.size(); i++) {
-                    out.println("<tr>");
+                for (QueryParam param : query.parameters) {
+                    // Render validation errors, if any
+                    if (validationError && param.validationMessage != null) {
+                        out.println("<tr><td style=\"color:red;\">" + param.validationMessage + "</td></tr>");
+                    }
 
-                    // Retrieve the control labeling/input from the parameter itself
-                    QueryParam param = query.parameters.get(i);
+                    // Render control label/input
+                    out.println("<tr>");
                     out.println("<td>" + param.getLabel() + "</td>");
                     out.println("<td>" + param.getInput() + "</td>");
-
                     out.println("</tr>");
                 }
             %>
             <tr>
                 <td></td>
-                <td><button type="submit">Execute Query</button></td>
+                <td><input type="submit" name="submit" value="Execute Query" /></td>
             </tr>
         </table>
     </form>
