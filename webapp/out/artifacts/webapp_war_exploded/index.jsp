@@ -8,11 +8,14 @@
 
 <%
 // Require users to be logged in to view this page
-if (session.getAttribute("authenticated") == null || !((boolean)session.getAttribute("authenticated")))
+if (session.getAttribute("authenticated") == null || !((boolean)session.getAttribute("authenticated"))) {
     response.sendRedirect("login.jsp");
+    return;
+}
 %>
 
 <%@ page contentType="text/html;charset=UTF-8" language="java" %>
+
 <html>
 <head>
     <title>Query Selection - Group 2 Final Project</title>
