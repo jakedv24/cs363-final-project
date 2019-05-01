@@ -4,13 +4,13 @@
 <%@ page contentType="text/html;charset=UTF-8" language="java" %>
 
 <%
-// Require users to be logged in to view this page
-if (session.getAttribute("authenticated") != null && !((boolean)session.getAttribute("authenticated")))
-    response.sendRedirect("login.jsp");
+    // Require users to be logged in to view this page
+    if (session.getAttribute("authenticated") != null && !((boolean) session.getAttribute("authenticated")))
+        response.sendRedirect("login.jsp");
 %>
 
-<%@ include file="./dbconf.jsp"%>
-<%@ include file="./queryconf.jsp"%>
+<%@ include file="./dbconf.jsp" %>
+<%@ include file="./queryconf.jsp" %>
 <%
     // Grab the requested query by its identifier
     String queryIdentifier = request.getParameter("q");
@@ -49,42 +49,50 @@ if (session.getAttribute("authenticated") != null && !((boolean)session.getAttri
     </style>
 </head>
 <body>
-    <h1>Group 2 Final Project</h1>
-    <h3>Query Results</h3>
+<h1>Group 2 Final Project</h1>
+<h3>Query Results</h3>
 
-    <a href="logout.jsp">Logout</a> |
-    <a href="index.jsp">Return to Query Selection</a> |
-    <a href="query.jsp?q=<% out.println(queryIdentifier); %>">Return to Query Parameters</a>
+<a href="logout.jsp">Logout</a> |
+<a href="index.jsp">Return to Query Selection</a> |
+<a href="query.jsp?q=<% out.println(queryIdentifier); %>">Return to Query Parameters</a>
 
-    <br />
+<br/>
 
-    <p>
-        <% out.println(query.description); %>
-    </p>
+<p>
+    <% out.println(query.description); %>
+</p>
 
-    <hr />
+<hr/>
 
-    <%
-        Connection conn;
-        PreparedStatement stmt;
-        ResultSet rs;
-        ResultSetMetaData rsMeta;
+<%
+    Connection conn;
+    PreparedStatement stmt;
+    ResultSet rs;
+    ResultSetMetaData rsMeta;
 
-        try {
-            // Load driver and connect
-            Class.forName("com.mysql.jdbc.Driver");
-            conn = DriverManager.getConnection(CONN_STR, CONN_USR, CONN_PWD);
+    try {
+        // Load driver and connect
+        Class.forName("com.mysql.jdbc.Driver");
+        conn = DriverManager.getConnection(CONN_STR, CONN_USR, CONN_PWD);
 
-            // Setup query statement
-            stmt = conn.prepareStatement(query.query);
+        // Setup query statement
+        stmt = conn.prepareStatement(query.query);
 
-            // Add query parameters
-            for (int i = 0; i < query.parameters.size(); i++) {
-                QueryParam param = query.parameters.get(i);
-                param.setStatementParameter(i + 1, stmt);
+        // Add query parameters
+        for (int i = 0; i < query.parameters.size(); i++) {
+            QueryParam param = query.parameters.get(i);
+            param.setStatementParameter(i + 1, stmt);
+        }
+
+        // Execute
+        if (query.identifier.equals("I") || query.identifier.equals("D")) {
+            int updateResult = stmt.executeUpdate();
+            if (updateResult == 1) {
+                out.println("<p>Update successful</p>");
+            } else {
+                out.println("<p>Update not successful</p>");
             }
-
-            // Execute
+        } else {
             rs = stmt.executeQuery();
             rsMeta = rs.getMetaData();
 
@@ -105,10 +113,11 @@ if (session.getAttribute("authenticated") != null && !((boolean)session.getAttri
                 out.println("</tr>");
             }
             out.println("</table>");
-        } catch (Exception e) {
-            out.println("Error: " + e.getMessage());
         }
-    %>
+    } catch (Exception e) {
+        out.println("Error: " + e.getMessage());
+    }
+%>
 
 </body>
 </html>
