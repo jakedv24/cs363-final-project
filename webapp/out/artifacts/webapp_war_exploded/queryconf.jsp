@@ -12,8 +12,6 @@
 		static final int HASHTAG_LIST = 5;
 		static final int STATE_LIST = 6;
 		static final int MONTH_LIST = 7;
-		static final int TEXT = 8;
-		static final int BOOLEAN = 9;
 	}
 
 	class QueryParam {
@@ -51,10 +49,6 @@
 					return "<input type=\"text\" name=\"" + identifier + "\" value=\"" + (value == null ? "" : value) + "\" />";
 				case QueryParamType.MONTH_LIST:
 					return "<input type=\"text\" name=\"" + identifier + "\" value=\"" + (value == null ? "" : value) + "\" />";
-                case QueryParamType.TEXT:
-                    return "<input type=\"text\" name=\"" + identifier + "\" value=\"" + (value == null ? "" : value) + "\" />";
-                case QueryParamType.BOOLEAN:
-                    return "<input type=\"text\" name=\"" + identifier + "\" value=\"" + (value == null ? "" : value) + "\" />";
 				default:
 					return "";
 			}
@@ -256,89 +250,15 @@
 
 	QUERIES.put(q10.identifier, q10);
 
-    // ====== CONFIGURE QUERY 15 =================================================
+    // ====== CONFIGURE QUERY 10 =================================================
 
     Query q15 = new Query("Q15",
             "Find users in a given sub-category along with the list of URLs used in the user’s tweets in a given month of a given year. Show the user’s screen name, the state the user belongs, and the list of URLs",
-            "SELECT u.sname, s.state, ur.url" +
-                    "FROM user u, state s, url ur, tweet t, tweet_url tu" +
-                    "WHERE s.state=u.belongs AND t.tweeted_by=u.sname AND tu.tweet_id=t.id AND tu.url=ur.url AND u.sub_category=? AND t.month=?;"
+            ""
     );
 
-    q15.parameters.add(new QueryParam("sub_category", "Sub-Category", QueryParamType.SUB_CATEGORY));
-    q15.parameters.add(new QueryParam("month", "Month", QueryParamType.MONTH));
+    q15.parameters.add(new QueryParam("hashtags", "Hashtags", QueryParamType.HASHTAG_LIST));
+    q15.parameters.add(new QueryParam("hashtag_count", "Hashtag Count", QueryParamType.NUMBER));
 
-    QUERIES.put(q15.identifier, q15);
-
-    // ====== CONFIGURE QUERY 23 =================================================
-
-    Query q23 = new Query("Q23",
-            "Find k most used hashtags with the count of tweets it appeared posted by a given sub-category of users in a list of months. Show the hashtag name and the count in descending order of the count.",
-            "SELECT h.hashtag, COUNT(h.hashtag) as amnt" +
-                    "FROM hashtag h, user u, tweet_hashtag th, tweet t" +
-                    "WHERE h.hashtag=th.hashtag AND th.tweet_id=t.id AND t.tweeted_by=u.sname AND u.sub_category=? AND t.month IN (?)" +
-                    "GROUP BY (h.hashtag)" +
-                    "ORDER BY COUNT(h.hashtag) " +
-                    "DESC LIMIT ?;"
-    );
-
-    q23.parameters.add(new QueryParam("sub_category", "Sub-Category", QueryParamType.SUB_CATEGORY));
-    q23.parameters.add(new QueryParam("months", "Months", QueryParamType.MONTH_LIST));
-    q23.parameters.add(new QueryParam("k", "Number most used hashtags", QueryParamType.MONTH_LIST));
-
-    QUERIES.put(q23.identifier, q23);
-
-    // ====== CONFIGURE QUERY 27 =================================================
-
-    Query q27 = new Query("Q27",
-            "Given a month and two selected years, report the screen names of influential users (based on top k retweet counts in that month in the two selected years).",
-            "(SELECT u.sname" +
-                    "FROM user u" +
-                    "INNER JOIN tweet t ON t.tweeted_by = u.sname" +
-                    "WHERE t.`month` = ? AND t.`year` = ?" +
-                    "GROUP BY u.sname" +
-                    "ORDER BY SUM(t.rt_count) DESC" +
-                    "LIMIT ?)" +
-                    "UNION" +
-                    "(SELECT u.sname" +
-                    "FROM user u" +
-                    "INNER JOIN tweet t ON t.tweeted_by = u.sname" +
-                    "WHERE t.`month` = ? AND t.`year` = ?" +
-                    "GROUP BY u.sname" +
-                    "ORDER BY SUM(t.rt_count) DESC" +
-                    "LIMIT ?);"
-    );
-
-    q27.parameters.add(new QueryParam("month", "Month", QueryParamType.MONTH));
-    q27.parameters.add(new QueryParam("year1", "Year one", QueryParamType.YEAR));
-    q27.parameters.add(new QueryParam("k", "Number of users", QueryParamType.NUMBER));
-    q27.parameters.add(new QueryParam("month", "Month", QueryParamType.MONTH));
-    q27.parameters.add(new QueryParam("year2", "Year two", QueryParamType.MONTH));
-    q27.parameters.add(new QueryParam("k", "Number of users", QueryParamType.NUMBER));
-
-    QUERIES.put(q27.identifier, q27);
-
-    // ====== CONFIGURE QUERY I =================================================
-
-    Query i = new Query("I",
-            "Insert information of a new user into the database.",
-            "INSERT INTO db_user VALUES (?, sha1(?), ?);"
-    );
-
-    i.parameters.add(new QueryParam("username", "Username", QueryParamType.TEXT));
-    i.parameters.add(new QueryParam("password", "Password", QueryParamType.TEXT));
-    i.parameters.add(new QueryParam("is_admin", "Is admin?", QueryParamType.BOOLEAN));
-
-    QUERIES.put(i.identifier, i);
-
-    // ====== CONFIGURE QUERY D =================================================
-
-    Query d = new Query("Q27",
-            "Delete a given user and all the tweets the user has tweeted, relevant hashtags, and users mentioned",
-            "DELETE FROM user WHERE sname=?;"
-    );
-
-    d.parameters.add(new QueryParam("sname", "Screen Name", QueryParamType.TEXT));
-
-    QUERIES.put(d.identifier, d);
+    QUERIES.put(q15.identifier, q10);
 %>
