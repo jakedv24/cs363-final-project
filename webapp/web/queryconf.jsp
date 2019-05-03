@@ -13,6 +13,8 @@
 		static final int STATE_LIST = 6;
 		static final int MONTH_LIST = 7;
 		static final int TEXT = 8;
+		static final int YEAR_MULTI = 9;
+		static final int NUMBER_MULTI = 10;
 	}
 
 	class QueryParam {
@@ -35,10 +37,12 @@
 		String getInput() {
 			switch (type) {
 				case QueryParamType.NUMBER:
+				case QueryParamType.NUMBER_MULTI:
 					return "<input type=\"text\" name=\"" + identifier + "\" value=\"" + (value == null ? "" : value) + "\" />";
 				case QueryParamType.MONTH:
 					return "<input type=\"text\" name=\"" + identifier + "\" value=\"" + (value == null ? "" : value) + "\" />";
 				case QueryParamType.YEAR:
+				case QueryParamType.YEAR_MULTI:
 					return "<input type=\"text\" name=\"" + identifier + "\" value=\"" + (value == null ? "" : value) + "\" />";
 				case QueryParamType.SUB_CATEGORY:
 					return "<input type=\"text\" name=\"" + identifier + "\" value=\"" + (value == null ? "" : value) + "\" />";
@@ -108,8 +112,10 @@
 		void setStatementParameter(int index, PreparedStatement stmt) throws SQLException {
 			switch (type) {
 				case QueryParamType.NUMBER:
+				case QueryParamType.NUMBER_MULTI:
 				case QueryParamType.MONTH:
 				case QueryParamType.YEAR:
+				case QueryParamType.YEAR_MULTI:
 					stmt.setInt(index, toNumber());
 					break;
 				case QueryParamType.SUB_CATEGORY:
@@ -341,11 +347,11 @@
     );
 
     q27.parameters.add(new QueryParam("month1", "First Month", QueryParamType.MONTH));
-    q27.parameters.add(new QueryParam("year1", "First Year", QueryParamType.YEAR));
-    q27.parameters.add(new QueryParam("k1", "Number of users from first set", QueryParamType.NUMBER));
+    q27.parameters.add(new QueryParam("year", "Year", QueryParamType.YEAR_MULTI));
+    q27.parameters.add(new QueryParam("k", "Number of users", QueryParamType.NUMBER_MULTI));
     q27.parameters.add(new QueryParam("month2", "Second month", QueryParamType.MONTH));
-    q27.parameters.add(new QueryParam("year2", "Second year", QueryParamType.YEAR));
-    q27.parameters.add(new QueryParam("k2", "Number of users from second set", QueryParamType.NUMBER));
+    q27.parameters.add(new QueryParam("year", "Year", QueryParamType.YEAR_MULTI));
+    q27.parameters.add(new QueryParam("k", "Number of users", QueryParamType.NUMBER_MULTI));
 
     QUERIES.put(q27.identifier, q27);
 

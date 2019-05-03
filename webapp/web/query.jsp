@@ -69,7 +69,18 @@ if (session.getAttribute("authenticated") != null && !((boolean)session.getAttri
         <table>
             <%
                 // Render form controls
+                boolean multiYearEncountered = false, multiNumberEncountered = false;
                 for (QueryParam param : query.parameters) {
+                    // Check if it's a multi-use parameter
+                    if (param.type == QueryParamType.YEAR_MULTI) {
+                        if (multiYearEncountered)       continue;
+                        else                            multiYearEncountered = true;
+                    }
+                    if (param.type == QueryParamType.NUMBER_MULTI) {
+                        if (multiNumberEncountered)     continue;
+                        else                            multiNumberEncountered = true;
+                    }
+
                     // Render validation errors, if any
                     if (validationError && param.validationMessage != null) {
                         out.println("<tr><td style=\"color:red;\">" + param.validationMessage + "</td></tr>");

@@ -32,10 +32,7 @@
     // If errors (shouldn't be, we already validated), send back to the main screen
     if (validationError) {
         // Redirect to results page
-        //response.sendRedirect("index.jsp");
-        for (QueryParam param : query.parameters) {
-            out.println(param.validationMessage);
-        }
+        response.sendRedirect("index.jsp");
     }
 %>
 
@@ -79,8 +76,20 @@
         stmt = conn.prepareStatement(query.query);
 
         // Add query parameters
+        String multiYearValue = null, multiNumberValue = null;
         for (int i = 0; i < query.parameters.size(); i++) {
             QueryParam param = query.parameters.get(i);
+
+            // Check if it's a multi-placement parameter
+            if (param.type == QueryParamType.YEAR_MULTI) {
+                if (multiYearValue == null)     multiYearValue = param.value;
+                else                        param.value = multiYearValue;
+            }
+            if (param.type == QueryParamType.NUMBER_MULTI) {
+                if (multiNumberValue == null)     multiNumberValue = param.value;
+                else                        param.value = multiNumberValue;
+            }
+            
             param.setStatementParameter(i + 1, stmt);
         }
 
