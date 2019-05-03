@@ -22,17 +22,14 @@ LIMIT		10;
 
 -- Table 1: ID Q3
 
-SET @k = 10; # NOTE: Hardcoded because of MySQL bug, will use JDBC parameterized queries
-SET @`year` = 2016;
-
 SELECT		q.hashtag, COUNT(*) AS state_count, GROUP_CONCAT(q.state)
 FROM 		(
-	SELECT 		h.hashtag, t.`year`, s.state, COUNT(*) AS tweet_count
+	SELECT 		h.hashtag, t.year, s.state, COUNT(*) AS tweet_count
 	FROM		tweet t
 	INNER JOIN	tweet_hashtag h ON h.tweet_id = t.id
 	INNER JOIN 	user u ON u.sname = t.tweeted_by
 	INNER JOIN	state s ON s.state = u.belongs
-	GROUP BY	h.hashtag, s.state, t.`year`
+	GROUP BY	h.hashtag, s.state, t.year
 ) q
 GROUP BY	q.hashtag
 ORDER BY	state_count DESC
