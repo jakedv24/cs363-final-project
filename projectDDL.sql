@@ -69,7 +69,7 @@ CREATE TABLE tweet_hashtag (
 
 CREATE TABLE tweet_url (
 	tweet_id BIGINT,
-    url VARCHAR(279),
+    url VARCHAR(500),
     
     PRIMARY KEY (tweet_id, url),
     CONSTRAINT tweeturl_tweet_fk FOREIGN KEY tweet_url(tweet_id) REFERENCES tweet(id) ON UPDATE CASCADE ON DELETE CASCADE,
