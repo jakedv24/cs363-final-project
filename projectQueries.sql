@@ -47,9 +47,15 @@ ORDER BY u.followers DESC;
 
 SELECT s.state
 FROM state s, user u, tweet t, tweet_hashtag th, hashtag h
-WHERE s.state=u.belongs AND u.sname=t.tweeted_by AND t.month=1 AND t.id=th.tweet_id AND th.hashtag=h.hashtag AND h.hashtag IN ("HB375", "AK")
+WHERE
+		s.state = u.belongs
+    AND u.sname = t.tweeted_by
+	AND t.month = 4
+	AND t.id = th.tweet_id
+    AND th.hashtag = h.hashtag
+    AND h.hashtag IN ("HB375", "AK")
 GROUP BY (s.state)
-HAVING COUNT(DISTINCT h.hashtag)=2;
+HAVING COUNT(DISTINCT h.hashtag) = 2;
 
 -- Table 1: ID Q15
 
