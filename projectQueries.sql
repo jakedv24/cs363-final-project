@@ -41,33 +41,34 @@ LIMIT 		10;
 SELECT u.sname, u.belongs
 FROM user u, hashtag h, tweet_hashtag th, tweet t
 WHERE t.tweeted_by=u.sname AND t.id=th.tweet_id AND h.hashtag IN ("GOPDebate", "DemDebate") 
-GROUP BY (u.sname) HAVING COUNT(u.sname) = 2
-ORDER BY u.followers DESC;
+GROUP BY (u.sname) HAVING COUNT(DISTINCT h.hashtag) = 2
+ORDER BY u.followers DESC
+LIMIT 10;
 
 -- Table 1: ID Q10
 
-SELECT s.state
+SELECT DISTINCT h.hashtag, GROUP_CONCAT(DISTINCT s.state)
 FROM state s, user u, tweet t, tweet_hashtag th, hashtag h
 WHERE
 		s.state = u.belongs
     AND u.sname = t.tweeted_by
-	AND t.month = 4
+	AND t.month = 5
 	AND t.id = th.tweet_id
     AND th.hashtag = h.hashtag
-    AND h.hashtag IN ("HB375", "AK")
-GROUP BY (s.state)
-HAVING COUNT(DISTINCT h.hashtag) = 2;
+    AND s.state IN ("IA", "California")
+GROUP BY (h.hashtag)
 
 -- Table 1: ID Q15
 
-SELECT u.sname, s.state, ur.url
+SELECT u.sname, s.state, GROUP_CONCAT(ur.url)
 FROM user u, state s, url ur, tweet t, tweet_url tu
 WHERE
 		s.state = u.belongs
     AND t.tweeted_by = u.sname
     AND tu.tweet_id = t.id 
     AND tu.url = ur.url
-    AND u.sub_category = "democrat" AND t.month = 1;
+    AND u.sub_category = "democrat" AND t.month = 1
+GROUP BY (u.sname);
 
 -- TABLE 1: ID Q23
 
