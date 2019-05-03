@@ -160,11 +160,11 @@
 	Query q1 = new Query("Q1",
 		"List k most retweeted tweets in a given month and a given year; show the retweet count, the tweet text, the posting user's screen name, the posting user's category, the posting user's sub-category in descending order of the retweet count.",
 
-		"SELECT 	t.rt_count, t.text, u.sname, u.category, u.sub_category" +
-		"FROM 		tweet t" +
-		"INNER JOIN	user u ON u.sname = t.tweeted_by" +
-		"WHERE		t.month = ? AND t.year = ?" +
-		"ORDER BY 	t.rt_count DESC" +
+		"SELECT 	t.rt_count, t.text, u.sname, u.category, u.sub_category " +
+		"FROM 		tweet t " +
+		"INNER JOIN	user u ON u.sname = t.tweeted_by " +
+		"WHERE		t.month = ? AND t.year = ? " +
+		"ORDER BY 	t.rt_count DESC " +
 		"LIMIT 		?"
 
 	);
