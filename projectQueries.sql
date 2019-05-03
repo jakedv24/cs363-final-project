@@ -1,18 +1,14 @@
+-- NOTE FOR ALL QUERIES!!
+-- Parameters assumed to be provided by JDBC, hardcoded here to demonstrate query
+
 -- Table 1: ID Q1
 
-SET @k = 10; # NOTE: Hardcoded because of MySQL bug, will use JDBC parameterized queries
-SET @`month` = 5;
-SET @`year` = 2016;
-
-SELECT			q.rt_count, q.`text`, q.sname, q.category, q.sub_category
-FROM (
-	SELECT 		t.rt_count, t.`text`, u.sname, u.category, u.sub_category, t.`month`, t.`day`, t.`year`
-	FROM 		tweet t
-	INNER JOIN	user u ON u.sname = t.tweeted_by
-	WHERE		t.`month` = @`month` AND t.`year` = @`year`
-	ORDER BY 	t.rt_count DESC
-	LIMIT 		10
-) q;
+SELECT 		t.rt_count, t.text, u.sname, u.category, u.sub_category
+FROM 		tweet t
+INNER JOIN	user u ON u.sname = t.tweeted_by
+WHERE		t.month = 4 AND t.year = 2016
+ORDER BY 	t.rt_count DESC
+LIMIT 		10;
 
 -- Table 1: ID Q2
 
