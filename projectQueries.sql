@@ -12,16 +12,11 @@ LIMIT 		10;
 
 -- Table 1: ID Q2
 
-SET @k = 10; # NOTE: Hardcoded because of MySQL bug, will use JDBC parameterized queries
-SET @hashtag = 'RPC2016';
-SET @`month` = 5;
-SET @`year` = 2016;
-
-SELECT 		*
+SELECT 		u.sname, u.category, t.text, t.rt_count
 FROM 		user u
 INNER JOIN	tweet t ON t.tweeted_by = u.sname
 INNER JOIN 	tweet_hashtag h ON h.tweet_id = t.id
-WHERE		t.`month` = @`month` AND t.`year` = @`year` AND h.hashtag = @hashtag
+WHERE		t.month = 4 AND t.year = 2016 AND h.hashtag = 'DemDebate'
 ORDER BY 	t.rt_count DESC
 LIMIT		10;
 
