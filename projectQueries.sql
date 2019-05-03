@@ -29,6 +29,7 @@ FROM 		(
 	INNER JOIN	tweet_hashtag h ON h.tweet_id = t.id
 	INNER JOIN 	user u ON u.sname = t.tweeted_by
 	INNER JOIN	state s ON s.state = u.belongs
+    WHERE 		t.year = 2016
 	GROUP BY	h.hashtag, s.state, t.year
 ) q
 GROUP BY	q.hashtag
