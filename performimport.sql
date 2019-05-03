@@ -105,3 +105,9 @@ FROM tagged_import;
 INSERT INTO tweet_url (tweet_id, url)
 SELECT DISTINCT tid, url
 FROM urlused_import;
+
+-- Initialize application users
+
+INSERT INTO db_user VALUES ('ddway', SHA1('kmHVuhB8K2'), 1);
+INSERT INTO db_user VALUES ('jdveatch', SHA1('1337h@ckrz'), 1);
+INSERT INTO db_user VALUES ('jdoe', SHA1('eodj'), 0);
