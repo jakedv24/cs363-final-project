@@ -14,3 +14,9 @@ Apr 25:
 Apr 27:
 	Added base page functionality. Imported jdbc connector.
 	Created a form on the main page to handle user input and created a connector.
+
+Apr 30:
+	Finished the remaining queries in JDBC.
+
+May 02:
+	Completed half of the timing questions for queries.	
