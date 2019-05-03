@@ -30,17 +30,18 @@ CREATE TABLE state (
 );
 
 CREATE TABLE `user` (
-	sname VARCHAR(15),
-    uname TEXT,
-    category TEXT,
-    sub_category TEXT,
-    location TEXT,
-    followers INT,
-    `following` INT,
-    belongs VARCHAR(20),
-    
-    PRIMARY KEY (sname),
-    CONSTRAINT user_state_fk FOREIGN KEY `user`(belongs) REFERENCES state(state)
+  `sname` varchar(15) NOT NULL,
+  `uname` text,
+  `category` text,
+  `sub_category` text,
+  `location` text,
+  `followers` int(11) DEFAULT NULL,
+  `following` int(11) DEFAULT NULL,
+  `belongs` varchar(20) DEFAULT NULL,
+  PRIMARY KEY (`sname`),
+  KEY `user_state_fk` (`belongs`),
+  KEY `idx_user_followers` (`followers`),
+  CONSTRAINT `user_state_fk` FOREIGN KEY (`belongs`) REFERENCES `state` (`state`)
 );
 
 CREATE TABLE tweet (
