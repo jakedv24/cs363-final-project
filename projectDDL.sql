@@ -44,19 +44,21 @@ CREATE TABLE `user` (
   CONSTRAINT `user_state_fk` FOREIGN KEY (`belongs`) REFERENCES `state` (`state`)
 );
 
-CREATE TABLE tweet (
-	id BIGINT,
-    `text` TEXT,
-    `day` TINYINT,
-    `month` TINYINT,
-    `year` INT,
-    rt_count INT,
-    rtweeted BIT,
-    created_at TIMESTAMP,
-    tweeted_by VARCHAR(15) NOT NULL,
-    
-    PRIMARY KEY (id),
-    CONSTRAINT tweet_user_fk FOREIGN KEY tweet(tweeted_by) REFERENCES `user`(sname) ON UPDATE CASCADE ON DELETE CASCADE
+CREATE TABLE `tweet` (
+  `id` bigint(20) NOT NULL,
+  `text` text,
+  `day` tinyint(4) DEFAULT NULL,
+  `month` tinyint(4) DEFAULT NULL,
+  `year` int(11) DEFAULT NULL,
+  `rt_count` int(11) DEFAULT NULL,
+  `rtweeted` bit(1) DEFAULT NULL,
+  `created_at` timestamp NULL DEFAULT NULL,
+  `tweeted_by` varchar(15) NOT NULL,
+  PRIMARY KEY (`id`),
+  KEY `idx_tweet_tweeted_by` (`tweeted_by`),
+  KEY `idx_tweet_day_month_year` (`day`,`month`,`year`),
+  KEY `idx_tweet_rt_count` (`rt_count`),
+  CONSTRAINT `tweet_user_fk` FOREIGN KEY (`tweeted_by`) REFERENCES `user` (`sname`) ON DELETE CASCADE ON UPDATE CASCADE
 );
 
 CREATE TABLE tweet_hashtag (
