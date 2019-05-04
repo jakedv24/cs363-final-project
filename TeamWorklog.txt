@@ -27,3 +27,12 @@ April   22-26, 2019
 April	27, 2019
 	JV	Added base page functionality. Imported jdbc connector.
 	JV	Created a form on the main page to handle user input and created a connector.
+
+May	 1- 3, 2019
+	DW	Implemented generic parameter system
+	DW	Implemented form/results screens
+	DW	Completed login functionality/authorization across app
+	DW	Identified query problems
+	JV	Debugged and fixed problems with lists of items
+	JV	Developed and fixed all queries
+

@@ -63,7 +63,7 @@
 
 <%
     Connection conn;
-    PreparedStatement stmt;
+    PreparedStatement stmt = null;
     ResultSet rs;
     ResultSetMetaData rsMeta;
 
@@ -73,13 +73,40 @@
         conn = DriverManager.getConnection(CONN_STR, CONN_USR, CONN_PWD);
 
         // Setup query statement
-        stmt = conn.prepareStatement(query.query);
+        boolean containsList = false;
+        for (int i = 0; i < query.parameters.size(); i++) {
+            QueryParam param = query.parameters.get(i);
+            if (param.type == QueryParamType.HASHTAG_LIST || param.type == QueryParamType.STATE_LIST || param.type == QueryParamType.MONTH_LIST) {
+                containsList = true;
+                String queryString = "";
+                int index = 0;
+                for (char c : query.query.toCharArray()) {
+                    if (c == '?') {
+                        if (index == i) {
+                            for (int j = 0; j < param.value.split(",").length; j++) {
+                                queryString += "?";
+                                if (j < param.value.split(",").length - 1) {
+                                    queryString += ",";
+                                }
+                            }
+                        } else {
+                            queryString += c;
+                        }
+                        index++;
+                    } else {
+                        queryString += c;
+                    }
+                }
+                stmt = conn.prepareStatement(queryString);
+            }
+        }
+        if (!containsList)
+            stmt = conn.prepareStatement(query.query);
 
         // Add query parameters
         String multiYearValue = null, multiNumberValue = null;
-        for (int i = 0; i < query.parameters.size(); i++) {
-            QueryParam param = query.parameters.get(i);
-
+        int ind = 1;
+        for (QueryParam param : query.parameters) {
             // Check if it's a multi-placement parameter
             if (param.type == QueryParamType.YEAR_MULTI) {
                 if (multiYearValue == null)     multiYearValue = param.value;
@@ -90,7 +117,7 @@
                 else                        param.value = multiNumberValue;
             }
             
-            param.setStatementParameter(i + 1, stmt);
+            ind = param.setStatementParameter(ind, stmt);
         }
 
         // Execute

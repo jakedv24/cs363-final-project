@@ -19,3 +19,9 @@ April 18, 2019
 April 26, 2019
 	Refactored login.jsp (POST to same page for auth.)
 	Implemented session storage for authenticated information
+May 1-3, 2019
+	Implemented generic parameter system for queries
+	Implemented queries into application
+	Developed query/results screens
+	Identified problems with previously developed queries and fixed
+	Final validation and submission

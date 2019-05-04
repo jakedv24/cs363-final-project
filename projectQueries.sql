@@ -40,7 +40,7 @@ LIMIT 		10;
 
 SELECT u.sname, u.belongs
 FROM user u, hashtag h, tweet_hashtag th, tweet t
-WHERE t.tweeted_by=u.sname AND t.id=th.tweet_id AND h.hashtag IN ("GOPDebate", "DemDebate") 
+WHERE t.tweeted_by=u.sname AND t.id=th.tweet_id AND h.hashtag IN ("GOPDebate", "DemDebate")  AND u.belongs != 'na'
 GROUP BY (u.sname) HAVING COUNT(DISTINCT h.hashtag) = 2
 ORDER BY u.followers DESC
 LIMIT 10;
@@ -53,10 +53,11 @@ WHERE
 		s.state = u.belongs
     AND u.sname = t.tweeted_by
 	AND t.month = 5
+    AND t.year = 2016
 	AND t.id = th.tweet_id
     AND th.hashtag = h.hashtag
     AND s.state IN ("IA", "California")
-GROUP BY (h.hashtag)
+GROUP BY (h.hashtag);
 
 -- Table 1: ID Q15
 
@@ -67,7 +68,7 @@ WHERE
     AND t.tweeted_by = u.sname
     AND tu.tweet_id = t.id 
     AND tu.url = ur.url
-    AND u.sub_category = "democrat" AND t.month = 1
+    AND u.sub_category = "democrat" AND t.month = 1 AND t.year = 2016
 GROUP BY (u.sname);
 
 -- TABLE 1: ID Q23
